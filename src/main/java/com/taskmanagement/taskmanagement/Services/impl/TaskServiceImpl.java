@@ -6,10 +6,13 @@ import com.taskmanagement.taskmanagement.Repository.TaskRepository;
 import com.taskmanagement.taskmanagement.Repository.UserRepository;
 import com.taskmanagement.taskmanagement.Response.DtoTask;
 import com.taskmanagement.taskmanagement.Response.DtoTaskInUp;
+import com.taskmanagement.taskmanagement.Response.DtoTaskTitle;
 import com.taskmanagement.taskmanagement.Response.DtoUser;
 import com.taskmanagement.taskmanagement.Services.TaskService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,12 +37,14 @@ public class TaskServiceImpl implements TaskService {
 
         task.setTitle(dtoTaskInUp.getTitle());
         task.setDescription(dtoTaskInUp.getDescription());
-        task.setCompleted(false);
+        task.setCompleted(dtoTaskInUp.getCompleted());
         task.setUser(user);
         taskRepository.save(task);
 
         DtoTask dtoTask = new DtoTask();
         dtoTask.setTitle(dtoTaskInUp.getTitle());
+        dtoTask.setDescription(dtoTaskInUp.getDescription());
+        dtoTask.setCompleted(dtoTaskInUp.getCompleted());
 
         DtoUser dtoUser = new DtoUser();
         dtoUser.setUsername(user.getUsername());
@@ -49,6 +54,17 @@ public class TaskServiceImpl implements TaskService {
         return dtoTask;
     }
 
+    @Override
+    public List<DtoTaskTitle> getTasksOfUser(Long userId) {
+        List<Task> dbTaskList = taskRepository.findByUser_id(userId);
+        List<DtoTaskTitle> taskList = new ArrayList<>();
 
-
+        for (Task task : dbTaskList) {
+            DtoTaskTitle dtoTaskTitle = new DtoTaskTitle();
+            dtoTaskTitle.setTitle(task.getTitle());
+            dtoTaskTitle.setCompleted(task.getCompleted());
+            taskList.add(dtoTaskTitle);
+        }
+        return taskList;
+    }
 }
