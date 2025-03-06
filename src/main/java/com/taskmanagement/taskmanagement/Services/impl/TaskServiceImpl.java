@@ -1,4 +1,54 @@
 package com.taskmanagement.taskmanagement.Services.impl;
 
-public class TaskServiceImpl {
+import com.taskmanagement.taskmanagement.Domain.Task;
+import com.taskmanagement.taskmanagement.Domain.User;
+import com.taskmanagement.taskmanagement.Repository.TaskRepository;
+import com.taskmanagement.taskmanagement.Repository.UserRepository;
+import com.taskmanagement.taskmanagement.Response.DtoTask;
+import com.taskmanagement.taskmanagement.Response.DtoTaskInUp;
+import com.taskmanagement.taskmanagement.Response.DtoUser;
+import com.taskmanagement.taskmanagement.Services.TaskService;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class TaskServiceImpl implements TaskService {
+
+    TaskRepository taskRepository;
+    UserRepository userRepository;
+
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public DtoTask saveTask(DtoTaskInUp dtoTaskInUp) {
+        Task task = new Task();
+        Optional<User> dbUser = userRepository.findById(dtoTaskInUp.getUserId());
+        if(dbUser.isEmpty()) {
+            return null;
+        }
+        User user = dbUser.get();
+
+        task.setTitle(dtoTaskInUp.getTitle());
+        task.setDescription(dtoTaskInUp.getDescription());
+        task.setCompleted(false);
+        task.setUser(user);
+        taskRepository.save(task);
+
+        DtoTask dtoTask = new DtoTask();
+        dtoTask.setTitle(dtoTaskInUp.getTitle());
+
+        DtoUser dtoUser = new DtoUser();
+        dtoUser.setUsername(user.getUsername());
+
+        dtoTask.setDtoUser(dtoUser);
+
+        return dtoTask;
+    }
+
+
+
 }
