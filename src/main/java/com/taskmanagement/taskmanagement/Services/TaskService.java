@@ -13,7 +13,7 @@ public interface TaskService {
 
     public List<DtoTaskTitle> getTasksOfUser(Long userId); ///view All task of user(This is just gonna return title and completed of tasks)
 
-//    public DtoTask getTask(Long taskId); ///view a task by taskId(This is gonna extract all task featurues include )
+    public DtoTask getTask(Long taskId); ///view a task by taskId(This is gonna extract all task featurues include )
 
 //    public DtoTask updateTask(Long taskId); ///update a task of user
 

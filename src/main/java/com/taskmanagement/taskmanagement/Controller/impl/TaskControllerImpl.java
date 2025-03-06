@@ -25,9 +25,15 @@ public class TaskControllerImpl implements TaskController {
         return taskService.saveTask(dtoTaskInUp);
     }
 
-    @GetMapping("/list/tasks/{id}")
+    @GetMapping("/list/{id}")
     @Override
     public List<DtoTaskTitle> getTasksOfUser(@PathVariable(name = "id") Long userId) {
         return taskService.getTasksOfUser(userId);
+    }
+
+    @GetMapping("/{id}")
+    @Override
+    public DtoTask getTask(@PathVariable(name = "id") Long taskId) {
+        return taskService.getTask(taskId);
     }
 }

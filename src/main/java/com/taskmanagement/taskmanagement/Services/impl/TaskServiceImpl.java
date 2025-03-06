@@ -28,13 +28,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public DtoTask saveTask(DtoTaskInUp dtoTaskInUp) {
-        Task task = new Task();
         Optional<User> dbUser = userRepository.findById(dtoTaskInUp.getUserId());
         if(dbUser.isEmpty()) {
             return null;
         }
         User user = dbUser.get();
 
+        Task task = new Task();
         task.setTitle(dtoTaskInUp.getTitle());
         task.setDescription(dtoTaskInUp.getDescription());
         task.setCompleted(dtoTaskInUp.getCompleted());
@@ -66,5 +66,33 @@ public class TaskServiceImpl implements TaskService {
             taskList.add(dtoTaskTitle);
         }
         return taskList;
+    }
+
+    @Override
+    public DtoTask getTask(Long taskId) {
+        Optional<Task> task = taskRepository.findById(taskId);
+        if(task.isEmpty()) {
+            return null;
+        }
+        Task t = task.get();
+
+        DtoTask dtoTask = new DtoTask();
+        dtoTask.setTitle(t.getTitle());
+        dtoTask.setDescription(t.getDescription());
+        dtoTask.setCompleted(t.getCompleted());
+
+
+        Optional<User> dbUser = userRepository.findById(t.getUser().getId());
+        if(dbUser.isEmpty()) {
+            return null;
+        }
+        User user = dbUser.get();
+
+        DtoUser dtoUser = new DtoUser();
+        dtoUser.setUsername(user.getUsername());
+        dtoTask.setDtoUser(dtoUser);
+
+        return dtoTask;
+
     }
 }

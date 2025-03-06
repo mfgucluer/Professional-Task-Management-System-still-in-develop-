@@ -12,4 +12,6 @@ public interface TaskController {
 
     public List<DtoTaskTitle> getTasksOfUser(Long userId);
 
+    public DtoTask getTask(Long taskId);
+
 }
