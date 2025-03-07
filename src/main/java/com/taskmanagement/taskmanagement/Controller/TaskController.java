@@ -14,4 +14,10 @@ public interface TaskController {
 
     public DtoTask getTask(Long taskId);
 
+    public String updateTask(Long taskId, DtoTaskInUp updateTask);
+
+    public void deleteTask(Long taskId);
+
+    public void deleteAllByUserId(Long userId);
+
 }

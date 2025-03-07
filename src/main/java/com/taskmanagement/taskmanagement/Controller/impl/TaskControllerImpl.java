@@ -36,4 +36,23 @@ public class TaskControllerImpl implements TaskController {
     public DtoTask getTask(@PathVariable(name = "id") Long taskId) {
         return taskService.getTask(taskId);
     }
+
+    @PutMapping("/update/{id}")
+    @Override
+    public String updateTask(@PathVariable(name = "id") Long taskId,@RequestBody DtoTaskInUp updateTask) {
+        return taskService.updateTask(taskId, updateTask);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @Override
+    public void deleteTask(@PathVariable(name = "id") Long taskId) {
+        taskService.deleteTask(taskId);
+    }
+
+    @DeleteMapping("/all-task/delete/{id}")
+    @Override
+    public void deleteAllByUserId(@PathVariable(name = "id") Long userId) {
+        taskService.deleteAllByUserId(userId);
+    }
+
 }

@@ -9,6 +9,7 @@ import com.taskmanagement.taskmanagement.Response.DtoTaskInUp;
 import com.taskmanagement.taskmanagement.Response.DtoTaskTitle;
 import com.taskmanagement.taskmanagement.Response.DtoUser;
 import com.taskmanagement.taskmanagement.Services.TaskService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class TaskServiceImpl implements TaskService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @Override
     public DtoTask saveTask(DtoTaskInUp dtoTaskInUp) {
         Optional<User> dbUser = userRepository.findById(dtoTaskInUp.getUserId());
@@ -54,6 +56,7 @@ public class TaskServiceImpl implements TaskService {
         return dtoTask;
     }
 
+    @Transactional
     @Override
     public List<DtoTaskTitle> getTasksOfUser(Long userId) {
         List<Task> dbTaskList = taskRepository.findByUser_id(userId);
@@ -68,6 +71,7 @@ public class TaskServiceImpl implements TaskService {
         return taskList;
     }
 
+    @Transactional
     @Override
     public DtoTask getTask(Long taskId) {
         Optional<Task> task = taskRepository.findById(taskId);
@@ -80,7 +84,6 @@ public class TaskServiceImpl implements TaskService {
         dtoTask.setTitle(t.getTitle());
         dtoTask.setDescription(t.getDescription());
         dtoTask.setCompleted(t.getCompleted());
-
 
         Optional<User> dbUser = userRepository.findById(t.getUser().getId());
         if(dbUser.isEmpty()) {
@@ -95,4 +98,46 @@ public class TaskServiceImpl implements TaskService {
         return dtoTask;
 
     }
+
+    @Transactional
+    @Override
+    public String updateTask(Long taskId, DtoTaskInUp updateTask) {
+        Optional<Task> dbTask = taskRepository.findById(taskId);
+        if(dbTask.isEmpty()) {
+            return null;
+        }
+
+        String response = new String();
+
+        Task task = dbTask.get();
+        DtoTask dtoTask = new DtoTask();
+
+            if (updateTask.getTitle() != null) {
+                task.setTitle(updateTask.getTitle());
+                response = "Başarılı";
+            }
+
+            if (updateTask.getDescription() != null) {
+                task.setDescription(updateTask.getDescription());
+                response = "Başarılı";
+            }
+
+            if (updateTask.getCompleted() != null) {
+                task.setCompleted(updateTask.getCompleted());
+                response = "Başarılı";
+            }
+
+        return response;
+    }
+
+    @Override
+    public void deleteTask(Long taskId) {
+        taskRepository.deleteById(taskId);
+    }
+
+    @Override
+    public void deleteAllByUserId(Long userId) {
+        taskRepository.deleteAllByUserId(userId);
+    }
+
 }

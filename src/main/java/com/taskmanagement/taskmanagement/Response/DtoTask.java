@@ -1,5 +1,6 @@
 package com.taskmanagement.taskmanagement.Response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.taskmanagement.taskmanagement.Domain.User;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

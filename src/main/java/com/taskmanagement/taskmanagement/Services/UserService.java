@@ -7,4 +7,10 @@ public interface UserService {
 
     public DtoUser saveUser(DtoUserInUp user);
 
+    public DtoUser getUserById(Long userId);
+
+    public String updateUser(Long userId, DtoUserInUp dtoUserInUp);
+
+    public void deleteUserById(Long userId);
+
 }
