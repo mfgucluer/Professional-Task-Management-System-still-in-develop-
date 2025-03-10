@@ -3,21 +3,21 @@ package com.taskmanagement.taskmanagement.Controller;
 import com.taskmanagement.taskmanagement.Response.DtoTask;
 import com.taskmanagement.taskmanagement.Response.DtoTaskInUp;
 import com.taskmanagement.taskmanagement.Response.DtoTaskTitle;
+import com.taskmanagement.taskmanagement.Response.GenericResponse;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface TaskController {
+    ResponseEntity<GenericResponse<DtoTask>> createTask(DtoTaskInUp dtoTaskInUp);
 
-    public DtoTask saveTask(DtoTaskInUp dtoTaskInUp);
+    ResponseEntity<GenericResponse<List<DtoTaskTitle>>> getTasksByUserId(Long userId);
 
-    public List<DtoTaskTitle> getTasksOfUser(Long userId);
+    ResponseEntity<GenericResponse<DtoTask>> getTaskById(Long taskId);
 
-    public DtoTask getTask(Long taskId);
+    ResponseEntity<GenericResponse<String>> updateTask(Long taskId, DtoTaskInUp updateTask);
 
-    public String updateTask(Long taskId, DtoTaskInUp updateTask);
+    ResponseEntity<GenericResponse<Void>> deleteTask(Long taskId);
 
-    public void deleteTask(Long taskId);
-
-    public void deleteAllByUserId(Long userId);
-
+    ResponseEntity<GenericResponse<Void>> deleteAllTasksByUserId(Long userId);
 }

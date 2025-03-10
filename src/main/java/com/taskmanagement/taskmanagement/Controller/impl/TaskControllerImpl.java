@@ -4,55 +4,63 @@ import com.taskmanagement.taskmanagement.Controller.TaskController;
 import com.taskmanagement.taskmanagement.Response.DtoTask;
 import com.taskmanagement.taskmanagement.Response.DtoTaskInUp;
 import com.taskmanagement.taskmanagement.Response.DtoTaskTitle;
+import com.taskmanagement.taskmanagement.Response.GenericResponse;
 import com.taskmanagement.taskmanagement.Services.TaskService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController()
-@RequestMapping("/rest/api/task")
+@RestController
+@RequestMapping("/api/v1/tasks")
 public class TaskControllerImpl implements TaskController {
 
-    TaskService taskService;
+    private final TaskService taskService;
 
     public TaskControllerImpl(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    @PostMapping("/save")
+    @PostMapping
     @Override
-    public DtoTask saveTask(@RequestBody DtoTaskInUp dtoTaskInUp) {
-        return taskService.saveTask(dtoTaskInUp);
+    public ResponseEntity<GenericResponse<DtoTask>> createTask(@Valid @RequestBody DtoTaskInUp dtoTaskInUp) {
+        DtoTask task = taskService.saveTask(dtoTaskInUp);
+        return ResponseEntity.ok(new GenericResponse<>(true, "Görev başarıyla oluşturuldu", task));
     }
 
-    @GetMapping("/list/{id}")
+    @GetMapping("/user/{userId}")
     @Override
-    public List<DtoTaskTitle> getTasksOfUser(@PathVariable(name = "id") Long userId) {
-        return taskService.getTasksOfUser(userId);
+    public ResponseEntity<GenericResponse<List<DtoTaskTitle>>> getTasksByUserId(@PathVariable Long userId) {
+        List<DtoTaskTitle> tasks = taskService.getTasksOfUser(userId);
+        return ResponseEntity.ok(new GenericResponse<>(true, "Görevler başarıyla getirildi", tasks));
     }
 
     @GetMapping("/{id}")
     @Override
-    public DtoTask getTask(@PathVariable(name = "id") Long taskId) {
-        return taskService.getTask(taskId);
+    public ResponseEntity<GenericResponse<DtoTask>> getTaskById(@PathVariable(name = "id") Long taskId) {
+        DtoTask task = taskService.getTask(taskId);
+        return ResponseEntity.ok(new GenericResponse<>(true, "Görev başarıyla getirildi", task));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @Override
-    public String updateTask(@PathVariable(name = "id") Long taskId,@RequestBody DtoTaskInUp updateTask) {
-        return taskService.updateTask(taskId, updateTask);
+    public ResponseEntity<GenericResponse<String>> updateTask(@PathVariable(name = "id") Long taskId, @Valid @RequestBody DtoTaskInUp updateTask) {
+        String result = taskService.updateTask(taskId, updateTask);
+        return ResponseEntity.ok(new GenericResponse<>(true, "Görev başarıyla güncellendi", result));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @Override
-    public void deleteTask(@PathVariable(name = "id") Long taskId) {
+    public ResponseEntity<GenericResponse<Void>> deleteTask(@PathVariable(name = "id") Long taskId) {
         taskService.deleteTask(taskId);
+        return ResponseEntity.ok(new GenericResponse<>(true, "Görev başarıyla silindi", null));
     }
 
-    @DeleteMapping("/all-task/delete/{id}")
+    @DeleteMapping("/user/{userId}")
     @Override
-    public void deleteAllByUserId(@PathVariable(name = "id") Long userId) {
+    public ResponseEntity<GenericResponse<Void>> deleteAllTasksByUserId(@PathVariable Long userId) {
         taskService.deleteAllByUserId(userId);
+        return ResponseEntity.ok(new GenericResponse<>(true, "Kullanıcının tüm görevleri başarıyla silindi", null));
     }
-
 }

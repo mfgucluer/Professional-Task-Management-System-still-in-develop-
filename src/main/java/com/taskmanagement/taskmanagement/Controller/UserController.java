@@ -2,14 +2,15 @@ package com.taskmanagement.taskmanagement.Controller;
 
 import com.taskmanagement.taskmanagement.Response.DtoUser;
 import com.taskmanagement.taskmanagement.Response.DtoUserInUp;
+import com.taskmanagement.taskmanagement.Response.GenericResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface UserController {
+    ResponseEntity<GenericResponse<DtoUser>> createUser(DtoUserInUp dtoUserInUp);
 
-    public DtoUser saveUser(DtoUserInUp dtoUserInUp);
+    ResponseEntity<GenericResponse<DtoUser>> getUserById(Long userId);
 
-    public DtoUser getUserById(Long userId);
+    ResponseEntity<GenericResponse<String>> updateUser(Long userId, DtoUserInUp dtoUserInUp);
 
-    public String updateUser(Long userId, DtoUserInUp dtoUserInUp);
-
-    public void deleteUserById(Long userId);
+    ResponseEntity<GenericResponse<Void>> deleteUser(Long userId);
 }
