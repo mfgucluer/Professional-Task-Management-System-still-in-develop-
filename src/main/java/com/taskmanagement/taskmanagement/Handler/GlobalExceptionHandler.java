@@ -38,6 +38,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(createApiError(errorsMap, request));
     }
 
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ApiError> handleAllExceptions(Throwable ex, WebRequest request) {
+        String errorMessage = "Beklenmeyen bir hata oluştu: " + ex.getMessage();
+        ApiError<String> apiError = createApiError(errorMessage, request);
+        apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
+    }
+
     private List<String> addMapValue(List<String> list, String value) {
         list.add(value);
         return list;

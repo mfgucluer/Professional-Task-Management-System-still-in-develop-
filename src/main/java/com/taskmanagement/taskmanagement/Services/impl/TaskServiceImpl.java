@@ -2,6 +2,9 @@ package com.taskmanagement.taskmanagement.Services.impl;
 
 import com.taskmanagement.taskmanagement.Domain.Task;
 import com.taskmanagement.taskmanagement.Domain.User;
+import com.taskmanagement.taskmanagement.Exception.BaseException;
+import com.taskmanagement.taskmanagement.Exception.ErrorMessage;
+import com.taskmanagement.taskmanagement.Exception.MessageType;
 import com.taskmanagement.taskmanagement.Repository.TaskRepository;
 import com.taskmanagement.taskmanagement.Repository.UserRepository;
 import com.taskmanagement.taskmanagement.Response.DtoTask;
@@ -32,7 +35,8 @@ public class TaskServiceImpl implements TaskService {
     public DtoTask saveTask(DtoTaskInUp dtoTaskInUp) {
         Optional<User> dbUser = userRepository.findById(dtoTaskInUp.getUserId());
         if(dbUser.isEmpty()) {
-            return null;
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, dtoTaskInUp.getUserId().toString()+" id user not created"));
+
         }
         User user = dbUser.get();
 
@@ -59,7 +63,15 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public List<DtoTaskTitle> getTasksOfUser(Long userId) {
+        Optional<User> user =  userRepository.findById(userId);
+        if(user.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+" id user not found"));
+        }
         List<Task> dbTaskList = taskRepository.findByUser_id(userId);
+        if(dbTaskList.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, "Kullanicinin task'i yok."));
+        }
+
         List<DtoTaskTitle> taskList = new ArrayList<>();
 
         for (Task task : dbTaskList) {
@@ -76,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
     public DtoTask getTask(Long taskId) {
         Optional<Task> task = taskRepository.findById(taskId);
         if(task.isEmpty()) {
-            return null;
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, taskId.toString()+" id task not found"));
         }
         Task t = task.get();
 
@@ -104,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
     public String updateTask(Long taskId, DtoTaskInUp updateTask) {
         Optional<Task> dbTask = taskRepository.findById(taskId);
         if(dbTask.isEmpty()) {
-            return null;
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, taskId.toString()+" id task not found"));
         }
 
         String response = new String();
@@ -132,11 +144,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(Long taskId) {
+        Optional<Task> task = taskRepository.findById(taskId);
+        if(task.isEmpty()) {
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, taskId.toString()+" id task not found"));
+        }
         taskRepository.deleteById(taskId);
     }
 
     @Override
     public void deleteAllByUserId(Long userId) {
+        Optional<User> user =  userRepository.findById(userId);
+        if(user.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+" id user not found"));
+        }
         taskRepository.deleteAllByUserId(userId);
     }
 

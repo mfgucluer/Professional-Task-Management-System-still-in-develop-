@@ -54,7 +54,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateUser(Long userId, DtoUserInUp dtoUserInUp) {
         Optional<User> user =  userRepository.findById(userId);
-        if(user.isEmpty()){return null;}
+
+        if(user.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+" id user not found"));
+        }
+
         User actualDbUser = user.get();
 
         if(dtoUserInUp.getUsername() != null){actualDbUser.setUsername(dtoUserInUp.getUsername());}
@@ -67,9 +71,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long userId) {
-        if(userId != null && userRepository.findById(userId).isPresent()){
-            userRepository.deleteById(userId);
+        Optional<User> user =  userRepository.findById(userId);
+        if(user.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+" id user not found"));
         }
+        userRepository.deleteById(userId);
     }
 
     //Bu method orphanRemoval'i anlamak icin
