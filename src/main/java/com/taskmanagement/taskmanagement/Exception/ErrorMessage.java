@@ -1,24 +1,11 @@
 package com.taskmanagement.taskmanagement.Exception;
 
 public class ErrorMessage {
-/// Mesajlari yonetebilmek icin actigim class
-/*
-Bana enum'dan gelen message tipini burada yoneticem aslinda.
-Mesaj tipimi hazirladim daha sonra
-bu class icinde bu mesaj tipini aldim
-bir de ofStatic diye bir sey olusturup kullanicini verdigi degeri aldim
-ve burada
-
-Simdi prepare de bu ikisini birlestirip birlestirmis oldugum degeri dondum.
-Simdi BaseException sinifina donuyorum
-
- */
 
     private MessageType messageType;
-    private String ofStatic; ///Extra bir deger verilebilir diye bir tane string tanimladik.
+    private String ofStatic;
 
 
-    /// Bu method messageType'in mesajini donmeye calisacak tipe gore.
     public String prepareErrorMessage(){
             StringBuilder builder = new StringBuilder();
             builder.append(messageType.getMessage());

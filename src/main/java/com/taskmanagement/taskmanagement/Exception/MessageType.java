@@ -2,7 +2,6 @@ package com.taskmanagement.taskmanagement.Exception;
 
 
 public enum MessageType {
-    /// Mesaj tipleri icin class'im.
 
 
     NO_RECORD_EXIST("1001", "kayıt bulunamadı"),

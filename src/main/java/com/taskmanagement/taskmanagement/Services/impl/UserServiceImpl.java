@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> user =  userRepository.findById(userId);
         if(user.isEmpty()){
-            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+"User not found"));
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+" id user not found"));
            }
 
         DtoUser dtoUser = new DtoUser();

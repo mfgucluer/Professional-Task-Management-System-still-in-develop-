@@ -5,6 +5,7 @@ import com.taskmanagement.taskmanagement.Controller.UserController;
 import com.taskmanagement.taskmanagement.Response.DtoUser;
 import com.taskmanagement.taskmanagement.Response.DtoUserInUp;
 import com.taskmanagement.taskmanagement.Services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +20,7 @@ public class UserControllerImpl implements UserController {
 
     @PostMapping("/save")
     @Override
-    public DtoUser saveUser(@RequestBody DtoUserInUp dtoUserInUp) {
+    public DtoUser saveUser(@Valid @RequestBody DtoUserInUp dtoUserInUp) {
         return userService.saveUser(dtoUserInUp);
     }
 
@@ -31,7 +32,7 @@ public class UserControllerImpl implements UserController {
 
     @PutMapping("/update/{id}")
     @Override
-    public String updateUser(@PathVariable(name = "id") Long userId,@RequestBody DtoUserInUp dtoUserInUp) {
+    public String updateUser(@PathVariable(name = "id") Long userId, @Valid @RequestBody DtoUserInUp dtoUserInUp) {
         return userService.updateUser(userId,dtoUserInUp);
     }
 
