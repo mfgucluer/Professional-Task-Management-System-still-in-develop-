@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface TaskService {
 
-
     public DtoTask saveTask(DtoTaskInUp dtoTaskInUp); ///save task for user
 
     public List<DtoTaskTitle> getTasksOfUser(Long userId); ///view All task of user(This is just gonna return title and completed of tasks)
@@ -23,4 +22,3 @@ public interface TaskService {
     void deleteAllByUserId(Long userId);
 
 }
-

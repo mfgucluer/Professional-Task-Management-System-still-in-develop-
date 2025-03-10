@@ -1,6 +1,10 @@
 package com.taskmanagement.taskmanagement.Services.impl;
 
+import com.taskmanagement.taskmanagement.Domain.Task;
 import com.taskmanagement.taskmanagement.Domain.User;
+import com.taskmanagement.taskmanagement.Exception.BaseException;
+import com.taskmanagement.taskmanagement.Exception.ErrorMessage;
+import com.taskmanagement.taskmanagement.Exception.MessageType;
 import com.taskmanagement.taskmanagement.Repository.UserRepository;
 import com.taskmanagement.taskmanagement.Response.DtoUser;
 import com.taskmanagement.taskmanagement.Response.DtoUserInUp;
@@ -36,7 +40,9 @@ public class UserServiceImpl implements UserService {
     public DtoUser getUserById(Long userId) {
 
         Optional<User> user =  userRepository.findById(userId);
-        if(user.isEmpty()){return null;}
+        if(user.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, userId.toString()+"User not found"));
+           }
 
         DtoUser dtoUser = new DtoUser();
         dtoUser.setUsername(user.get().getUsername());
@@ -64,6 +70,20 @@ public class UserServiceImpl implements UserService {
         if(userId != null && userRepository.findById(userId).isPresent()){
             userRepository.deleteById(userId);
         }
-
     }
+
+    //Bu method orphanRemoval'i anlamak icin
+    public void demonstrateOrphanRemoval(Long userId) {
+
+        User user = userRepository.findById(userId).get(); /// 1. Adım: User'ı veritabanından getir
+
+        Task task = user.getTasks().get(0); /// 2. Adım: User'ın task listesinden ilk task'ı al
+
+
+        task.setUser(null);
+        //user.getTasks().remove(task);  /// 3. Adım: Task'ı user'ın listesinden çıkar /// İlişki burada koparılıyor!
+
+        userRepository.save(user);  /// 4. Adım: Değişiklikleri veritabanına kaydet
+    }
+
 }

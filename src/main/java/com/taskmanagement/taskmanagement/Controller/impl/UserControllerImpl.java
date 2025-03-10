@@ -35,10 +35,15 @@ public class UserControllerImpl implements UserController {
         return userService.updateUser(userId,dtoUserInUp);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @Override
     public void deleteUserById(@PathVariable(name = "id") Long userId) {
         userService.deleteUserById(userId);
+    }
+
+    @GetMapping("/orphan/{id}")
+    public void orphanRemove(@PathVariable(name = "id") Long userId){
+        userService.demonstrateOrphanRemoval(userId);
     }
 
 }

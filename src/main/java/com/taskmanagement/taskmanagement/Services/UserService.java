@@ -13,4 +13,6 @@ public interface UserService {
 
     public void deleteUserById(Long userId);
 
+    public void demonstrateOrphanRemoval(Long userId);
+
 }
