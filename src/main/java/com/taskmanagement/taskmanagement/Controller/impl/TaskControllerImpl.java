@@ -1,5 +1,6 @@
 package com.taskmanagement.taskmanagement.Controller.impl;
 
+import com.taskmanagement.taskmanagement.Constants.ApiConstants;
 import com.taskmanagement.taskmanagement.Controller.TaskController;
 import com.taskmanagement.taskmanagement.Response.DtoTask;
 import com.taskmanagement.taskmanagement.Response.DtoTaskInUp;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/tasks")
+@RequestMapping(ApiConstants.TASKS)
 public class TaskControllerImpl implements TaskController {
 
     private final TaskService taskService;
@@ -28,35 +29,35 @@ public class TaskControllerImpl implements TaskController {
         return ResponseEntity.ok(task);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping(ApiConstants.TASK_BY_USER_ID)
     @Override
     public ResponseEntity<List<DtoTaskTitle>> getTasksByUserId(@PathVariable Long userId) {
         List<DtoTaskTitle> tasks = taskService.getTasksOfUser(userId);
         return ResponseEntity.ok(tasks);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(ApiConstants.TASK_BY_ID)
     @Override
     public ResponseEntity<DtoTask> getTaskById(@PathVariable(name = "id") Long taskId) {
         DtoTask task = taskService.getTask(taskId);
         return ResponseEntity.ok(task);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(ApiConstants.TASK_BY_ID)
     @Override
     public ResponseEntity<String> updateTask(@PathVariable(name = "id") Long taskId, @Valid @RequestBody DtoTaskInUp updateTask) {
         String result = taskService.updateTask(taskId, updateTask);
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(ApiConstants.TASK_BY_ID)
     @Override
     public ResponseEntity<Void> deleteTask(@PathVariable(name = "id") Long taskId) {
         taskService.deleteTask(taskId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping(ApiConstants.TASK_BY_USER_ID)
     @Override
     public ResponseEntity<Void> deleteAllTasksByUserId(@PathVariable Long userId) {
         taskService.deleteAllByUserId(userId);
