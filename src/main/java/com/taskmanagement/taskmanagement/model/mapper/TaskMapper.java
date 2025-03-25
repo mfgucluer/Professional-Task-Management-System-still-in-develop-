@@ -10,8 +10,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface TaskMapper {
 
-    TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
-
     @Mapping(target = "taskNo", ignore = true) // password alanını es geçiyoruz
     Task taskInputDtoToTask(TaskInputDto taskInputDto);
 

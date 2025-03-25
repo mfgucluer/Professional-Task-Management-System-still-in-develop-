@@ -20,17 +20,19 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
    UserRepository userRepository;
+   UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @Transactional(readOnly = false)
     @Override
     public UserDto saveUser(UserInputDto userInputDto) {
-        User user = UserMapper.INSTANCE.userInputDtoToUser(userInputDto);
+        User user = userMapper.userInputDtoToUser(userInputDto);
         User dbUser = userRepository.save(user);
-        return UserMapper.INSTANCE.userInputDtoToDto(userInputDto);
+        return userMapper.userInputDtoToDto(userInputDto);
     }
 
     @Transactional
@@ -41,7 +43,7 @@ public class UserServiceImpl implements UserService {
             throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, id.toString()+" id user not found"));
            }
         User actualDbUser = user.get();
-        return UserMapper.INSTANCE.userToDto(actualDbUser);
+        return userMapper.userToDto(actualDbUser);
     }
 
     @Transactional(readOnly = false)

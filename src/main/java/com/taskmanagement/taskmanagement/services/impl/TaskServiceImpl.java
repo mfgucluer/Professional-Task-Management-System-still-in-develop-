@@ -29,11 +29,13 @@ public class TaskServiceImpl implements TaskService {
     TaskRepository taskRepository;
     UserRepository userRepository;
     TaskNoGenerator taskNoGenerator;
+    TaskMapper taskMapper;
 
-    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, TaskNoGenerator taskNoGenerator) {
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, TaskNoGenerator taskNoGenerator, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.taskNoGenerator = taskNoGenerator;
+        this.taskMapper = taskMapper;
     }
 
     @Transactional(readOnly = false)
@@ -45,12 +47,12 @@ public class TaskServiceImpl implements TaskService {
         }
         User user = dbUser.get();
 
-        Task task = TaskMapper.INSTANCE.taskInputDtoToTask(taskInputDto);
+        Task task = taskMapper.taskInputDtoToTask(taskInputDto);
         task.setUser(user);
         task.setTaskNo(taskNoGenerator.generateTaskNo(taskInputDto.getUserId()));
         taskRepository.save(task);
 
-        TaskDto taskDto = TaskMapper.INSTANCE.taskInputDtoToTaskDto(taskInputDto);
+        TaskDto taskDto = taskMapper.taskInputDtoToTaskDto(taskInputDto);
 
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
@@ -96,8 +98,6 @@ public class TaskServiceImpl implements TaskService {
         taskDto.setTitle(task.getTitle());
         taskDto.setDescription(task.getDescription());
         taskDto.setCompleted(task.getCompleted());
-
-//        TaskDto taskDto = TaskMapper.INSTANCE.taskToTaskDto(task);
 
         Optional<User> dbUser = userRepository.findById(task.getUser().getId());
         if(dbUser.isEmpty()) {
