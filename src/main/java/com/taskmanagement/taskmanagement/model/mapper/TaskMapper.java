@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TaskMapper {
 
     @Mapping(target = "taskNo", ignore = true) // password alanını es geçiyoruz

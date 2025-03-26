@@ -6,7 +6,7 @@ import com.taskmanagement.taskmanagement.model.dto.response.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     UserDto userToDto(User user);
     UserDto userInputDtoToDto(UserInputDto userInputDto);

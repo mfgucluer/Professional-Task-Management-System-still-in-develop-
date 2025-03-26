@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,15 +63,56 @@ public class UserServiceTest {
         verify(userMapper, times(1)).userInputDtoToDto(userInputDto);
     }
 
-    void getUsers_givenValidInput_shouldReturnUsers() {
 
+
+
+
+    @Test
+    @DisplayName("Get User Testi")
+    void getUsers_givenValidInput_shouldReturnUsers() {
+        User user = new User(1L, "john_doe", "securePassword", "john@example.com", new ArrayList<>());
+        Optional<User> optionalUser = Optional.of(user);
+
+        UserDto userDto = new UserDto("john_doe", "john@example.com");
+
+        when(userMapper.userToDto(any(User.class))).thenReturn(userDto);
+        when(userRepository.findById(1L)).thenReturn(optionalUser);
+
+        UserDto userDtoResponse = userService.getUserById(1L);
+
+        assertEquals(user.getUsername(), userDtoResponse.getUsername());
+        assertEquals(user.getEmail(), userDtoResponse.getEmail());
+
+        verify(userRepository).findById(1L);
+        verify(userMapper).userToDto(user);
     }
 
+    @Test
+    @DisplayName("UpdateUser Testi")
+    void updateUser_givenValidInput_shouldReturn() {
+        User oldDbUser = new User(1L, "john_doe", "securePassword", "john@example.com", new ArrayList<>());
+        Optional<User> optionalUser = Optional.of(oldDbUser);
 
+        UserInputDto userInputDto = new UserInputDto("Walter_White", "newPassword", "walterwhite@danger.com");
 
+        when(userRepository.findById(1L)).thenReturn(optionalUser);
 
+        User actualDbUser = optionalUser.get();
 
+         actualDbUser.setUsername(userInputDto.getUsername());
+         actualDbUser.setEmail(userInputDto.getEmail());
+         actualDbUser.setPassword(userInputDto.getPassword());
 
+        User newDbUser = new User(1L, "Walter_White", "newPassword", "walterwhite@danger.com", new ArrayList<>());
 
+        when(userRepository.save(actualDbUser)).thenReturn(newDbUser);
 
+        userService.updateUser(1L, userInputDto);
+
+        assertEquals(actualDbUser.getUsername(), userInputDto.getUsername());
+        assertEquals(actualDbUser.getEmail(), userInputDto.getEmail());
+        assertEquals(actualDbUser.getPassword(), userInputDto.getPassword());
+
+        verify(userRepository, times(1)).findById(1L);
+    }
 }
