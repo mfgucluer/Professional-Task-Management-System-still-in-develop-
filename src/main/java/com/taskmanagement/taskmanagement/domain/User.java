@@ -38,4 +38,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 
+    @Column(name = "task_counter")
+    private int taskCounter = 0;
+
 }

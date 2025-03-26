@@ -38,13 +38,13 @@ public class UserServiceTest {
 
         UserInputDto userInputDto = new UserInputDto("john_doe", "securePassword", "john@example.com");
 
-        User user = new User(
-                1L,
-                "john_doe",
-                "securePassword",
-                "john@example.com",
-                new ArrayList<>()
-        );
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("john_doe");
+        user.setPassword("securePassword");
+        user.setEmail("john@example.com");
+
 
         UserDto userDto = new UserDto("john_doe", "john@example.com");
 
@@ -70,7 +70,12 @@ public class UserServiceTest {
     @Test
     @DisplayName("Get User Testi")
     void getUsers_givenValidInput_shouldReturnUsers() {
-        User user = new User(1L, "john_doe", "securePassword", "john@example.com", new ArrayList<>());
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("john_doe");
+        user.setPassword("securePassword");
+        user.setEmail("john@example.com");
         Optional<User> optionalUser = Optional.of(user);
 
         UserDto userDto = new UserDto("john_doe", "john@example.com");
@@ -90,7 +95,11 @@ public class UserServiceTest {
     @Test
     @DisplayName("UpdateUser Testi")
     void updateUser_givenValidInput_shouldReturn() {
-        User oldDbUser = new User(1L, "john_doe", "securePassword", "john@example.com", new ArrayList<>());
+        User oldDbUser = new User();
+        oldDbUser.setId(1L);
+        oldDbUser.setUsername("john_doe");
+        oldDbUser.setPassword("securePassword");
+        oldDbUser.setEmail("john@example.com");
         Optional<User> optionalUser = Optional.of(oldDbUser);
 
         UserInputDto userInputDto = new UserInputDto("Walter_White", "newPassword", "walterwhite@danger.com");
@@ -103,7 +112,11 @@ public class UserServiceTest {
          actualDbUser.setEmail(userInputDto.getEmail());
          actualDbUser.setPassword(userInputDto.getPassword());
 
-        User newDbUser = new User(1L, "Walter_White", "newPassword", "walterwhite@danger.com", new ArrayList<>());
+        User newDbUser = new User();
+        newDbUser.setId(1L);
+        newDbUser.setUsername("Walter_White");
+        newDbUser.setEmail("walterwhite@danger.com");
+        newDbUser.setPassword("newPassword");
 
         when(userRepository.save(actualDbUser)).thenReturn(newDbUser);
 
