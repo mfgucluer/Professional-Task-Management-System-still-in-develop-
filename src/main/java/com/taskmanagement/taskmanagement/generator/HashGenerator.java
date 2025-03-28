@@ -11,7 +11,7 @@ public class HashGenerator {
     static public String generateHash(String timestamp, Long userId, int counter) {
         try {
 
-            // SHA-256 hashleme için giriş verisi olusturma isi
+            // SHA-256 hashleme için giriş verisi olusturma isiii
             String input = timestamp + userId + counter;
 
             // SHA-256 hash olusturma isi

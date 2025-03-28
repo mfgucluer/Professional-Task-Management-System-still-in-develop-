@@ -56,6 +56,8 @@ public class TaskServiceImpl implements TaskService {
 
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+
 
         taskDto.setUserDto(userDto);
 
@@ -107,6 +109,7 @@ public class TaskServiceImpl implements TaskService {
 
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
         taskDto.setUserDto(userDto);
 
         return taskDto;
@@ -164,6 +167,26 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteAllByUserId(userId);
     }
 
+    @Override
+    public TaskDto getTaskByTaskNo(String taskNo) {
+        Optional<Task> optionalTask = taskRepository.findByTaskNo(taskNo);
+        if(optionalTask.isEmpty()) {
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, taskNo + " no'lu task bulunamadı"));
+        }
+        Task task = optionalTask.get();
 
+        TaskDto taskDto = new TaskDto();
+        taskDto.setTitle(task.getTitle());
+        taskDto.setDescription(task.getDescription());
+        taskDto.setCompleted(task.getCompleted());
+
+        User user = task.getUser();
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        taskDto.setUserDto(userDto);
+
+        return taskDto;
+    }
 
 }

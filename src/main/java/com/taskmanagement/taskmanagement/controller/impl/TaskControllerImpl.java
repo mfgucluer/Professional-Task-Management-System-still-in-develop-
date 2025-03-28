@@ -63,4 +63,11 @@ public class TaskControllerImpl implements TaskController {
         taskService.deleteAllByUserId(userId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping(ApiConstants.TASK_BY_TASK_NO)
+    @Override
+    public ResponseEntity<TaskDto> getTaskByTaskNo(@PathVariable String taskNo) {
+        TaskDto task = taskService.getTaskByTaskNo(taskNo);
+        return ResponseEntity.ok(task);
+    }
 }

@@ -19,4 +19,6 @@ public interface TaskController {
     ResponseEntity<Void> deleteTask(Long id);
 
     ResponseEntity<Void> deleteAllTasksByUserId(Long userId);
+
+    ResponseEntity<TaskDto> getTaskByTaskNo(String taskNo);
 }

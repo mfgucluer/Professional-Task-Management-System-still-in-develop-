@@ -21,4 +21,6 @@ public interface TaskService {
 
     void deleteAllByUserId(Long userId);
 
+    TaskDto getTaskByTaskNo(String taskNo);
+
 }

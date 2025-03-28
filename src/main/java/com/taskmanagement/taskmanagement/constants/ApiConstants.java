@@ -10,6 +10,8 @@ public class ApiConstants {
     // Task Endpoints
     public static final String TASK_BY_ID = "/{id}";
     public static final String TASK_BY_USER_ID = "/user/{userId}";
+    public static final String TASK_BY_TASK_NO = "/taskNo/{taskNo}";
+
 
     // User Endpoints
     public static final String USER_BY_ID = "/{id}";
