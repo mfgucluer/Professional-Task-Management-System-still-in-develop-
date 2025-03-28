@@ -49,13 +49,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false)
     @Override
     public String updateUser(Long id, UserInputDto userInputDto) {
-        Optional<User> user =  userRepository.findById(id);
 
-        if(user.isEmpty()){
-            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, id.toString()+" id user not found"));
-        }
-
-        User actualDbUser = user.get();
+        User actualDbUser = userRepository.findById(id)
+                .orElseThrow(() -> new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, id.toString() + " id user not found")));
 
         if(userInputDto.getUsername() != null){actualDbUser.setUsername(userInputDto.getUsername());}
         if(userInputDto.getEmail() != null){actualDbUser.setEmail(userInputDto.getEmail());}

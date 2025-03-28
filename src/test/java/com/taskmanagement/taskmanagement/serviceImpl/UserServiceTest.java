@@ -1,4 +1,4 @@
-package com.taskmanagement.taskmanagement;
+package com.taskmanagement.taskmanagement.serviceImpl;
 
 import com.taskmanagement.taskmanagement.domain.User;
 import com.taskmanagement.taskmanagement.model.dto.request.UserInputDto;
@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +37,6 @@ public class UserServiceTest {
 
         UserInputDto userInputDto = new UserInputDto("john_doe", "securePassword", "john@example.com");
 
-
         User user = new User();
         user.setId(1L);
         user.setUsername("john_doe");
@@ -62,10 +60,6 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(user);
         verify(userMapper, times(1)).userInputDtoToDto(userInputDto);
     }
-
-
-
-
 
     @Test
     @DisplayName("Get User Testi")
@@ -106,11 +100,10 @@ public class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(optionalUser);
 
-        User actualDbUser = optionalUser.get();
 
-         actualDbUser.setUsername(userInputDto.getUsername());
-         actualDbUser.setEmail(userInputDto.getEmail());
-         actualDbUser.setPassword(userInputDto.getPassword());
+        oldDbUser.setUsername(userInputDto.getUsername());
+        oldDbUser.setEmail(userInputDto.getEmail());
+        oldDbUser.setPassword(userInputDto.getPassword());
 
         User newDbUser = new User();
         newDbUser.setId(1L);
@@ -118,14 +111,52 @@ public class UserServiceTest {
         newDbUser.setEmail("walterwhite@danger.com");
         newDbUser.setPassword("newPassword");
 
-        when(userRepository.save(actualDbUser)).thenReturn(newDbUser);
+        when(userRepository.save(oldDbUser)).thenReturn(newDbUser);
 
         userService.updateUser(1L, userInputDto);
 
-        assertEquals(actualDbUser.getUsername(), userInputDto.getUsername());
-        assertEquals(actualDbUser.getEmail(), userInputDto.getEmail());
-        assertEquals(actualDbUser.getPassword(), userInputDto.getPassword());
+        assertEquals(newDbUser.getUsername(), userInputDto.getUsername());
+        assertEquals(newDbUser.getEmail(), userInputDto.getEmail());
+        assertEquals(newDbUser.getPassword(), userInputDto.getPassword());
 
         verify(userRepository, times(1)).findById(1L);
     }
+
+    @Test
+    void updateUser_giveNullInput_shouldReturn() {
+        User oldDbUser = new User();
+        oldDbUser.setId(1L);
+        oldDbUser.setUsername("john_doe");
+        oldDbUser.setPassword("securePassword");
+        oldDbUser.setEmail("john@example.com");
+        Optional<User> optionalUser = Optional.of(oldDbUser);
+
+        UserInputDto userInputDto = new UserInputDto(null,null,null);
+        when(userRepository.findById(1L)).thenReturn(optionalUser);
+        when(userRepository.save(oldDbUser)).thenReturn(oldDbUser);
+        userService.updateUser(1L, userInputDto);
+    }
+
+    @Test
+    void deleteUser_givenValidInput_shouldReturn() {
+        User dbUser = new User();
+        dbUser.setId(1L);
+        dbUser.setUsername("john_doe");
+        dbUser.setPassword("securePassword");
+        dbUser.setEmail("john@example.com");
+        Optional<User> optionalUser = Optional.of(dbUser);
+
+        when(userRepository.findById(1L)).thenReturn(optionalUser);
+        doNothing().when(userRepository).deleteById(1L);
+
+        userService.deleteUserById(1L);
+
+        verify(userRepository).findById(1L);
+        verify(userRepository).deleteById(1L);
+    }
+
+
+
+
+
 }
