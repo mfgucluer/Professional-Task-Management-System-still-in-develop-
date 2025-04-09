@@ -24,9 +24,6 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(unique = true, nullable = false)
-    private String taskNo; // Özel oluşturulan ID
-
     @NotEmpty(message = "Title alanı boş bırakılamaz!")
     private String title;
 
@@ -37,5 +34,9 @@ public class Task {
     private User user;
 
     private Boolean completed;
+
+
+    @OneToOne(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
+    private TaskNumber taskNumber;
 
 }

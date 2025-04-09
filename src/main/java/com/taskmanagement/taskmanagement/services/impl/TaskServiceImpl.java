@@ -1,12 +1,14 @@
 package com.taskmanagement.taskmanagement.services.impl;
 
 import com.taskmanagement.taskmanagement.domain.Task;
+import com.taskmanagement.taskmanagement.domain.TaskNumber;
 import com.taskmanagement.taskmanagement.domain.User;
 import com.taskmanagement.taskmanagement.exception.BaseException;
 import com.taskmanagement.taskmanagement.exception.ErrorMessage;
 import com.taskmanagement.taskmanagement.exception.MessageType;
 import com.taskmanagement.taskmanagement.generator.TaskNoGenerator;
 import com.taskmanagement.taskmanagement.model.mapper.TaskMapper;
+import com.taskmanagement.taskmanagement.repository.TaskNumberRepository;
 import com.taskmanagement.taskmanagement.repository.TaskRepository;
 import com.taskmanagement.taskmanagement.repository.UserRepository;
 import com.taskmanagement.taskmanagement.model.dto.response.TaskDto;
@@ -30,12 +32,14 @@ public class TaskServiceImpl implements TaskService {
     UserRepository userRepository;
     TaskNoGenerator taskNoGenerator;
     TaskMapper taskMapper;
+    TaskNumberRepository taskNumberRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, TaskNoGenerator taskNoGenerator, TaskMapper taskMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, TaskNoGenerator taskNoGenerator, TaskMapper taskMapper, TaskNumberRepository taskNumberRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.taskNoGenerator = taskNoGenerator;
         this.taskMapper = taskMapper;
+        this.taskNumberRepository = taskNumberRepository;
     }
 
     @Transactional(readOnly = false)
@@ -47,9 +51,10 @@ public class TaskServiceImpl implements TaskService {
         }
         User user = dbUser.get();
 
+        String taskNo = taskNoGenerator.generateTaskNo(taskInputDto.getUserId());
+
         Task task = taskMapper.taskInputDtoToTask(taskInputDto);
         task.setUser(user);
-        task.setTaskNo(taskNoGenerator.generateTaskNo(taskInputDto.getUserId()));
         taskRepository.save(task);
 
         TaskDto taskDto = taskMapper.taskInputDtoToTaskDto(taskInputDto);
@@ -58,8 +63,13 @@ public class TaskServiceImpl implements TaskService {
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
 
-
         taskDto.setUserDto(userDto);
+
+        TaskNumber taskNumber = new TaskNumber();
+        taskNumber.setTask(task);
+        taskNumber.setTaskNo(taskNo);
+        taskNumber.setUserId(user);
+        taskNumberRepository.save(taskNumber);
 
         return taskDto;
     }
@@ -169,11 +179,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getTaskByTaskNo(String taskNo) {
-        Optional<Task> optionalTask = taskRepository.findByTaskNo(taskNo);
-        if(optionalTask.isEmpty()) {
+        Optional<TaskNumber> optionalTaskNumber = taskNumberRepository.findByTaskNo(taskNo);
+        if(optionalTaskNumber.isEmpty()) {
             throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, taskNo + " no'lu task bulunamadı"));
         }
-        Task task = optionalTask.get();
+        
+        Task task = optionalTaskNumber.get().getTask();
 
         TaskDto taskDto = new TaskDto();
         taskDto.setTitle(task.getTitle());
