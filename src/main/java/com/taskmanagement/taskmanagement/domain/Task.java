@@ -35,8 +35,7 @@ public class Task {
 
     private Boolean completed;
 
-
-    @OneToOne(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
+    @OneToOne(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private TaskNumber taskNumber;
 
 }

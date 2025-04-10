@@ -22,17 +22,17 @@ public class TaskNumber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User userId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id", nullable = false)
+    @JoinColumn(name = "task_id")
     private Task task;
 
-    @Column(name = "task_no", nullable = false)
+    @Column(name = "task_no")
     private String taskNo;
 
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

@@ -69,6 +69,7 @@ public class TaskServiceImpl implements TaskService {
         taskNumber.setTask(task);
         taskNumber.setTaskNo(taskNo);
         taskNumber.setUserId(user);
+        taskNumber.setCreatedAt(java.time.LocalDateTime.now());
         taskNumberRepository.save(taskNumber);
 
         return taskDto;
