@@ -1,7 +1,7 @@
 package com.taskmanagement.taskmanagement.generator;
 
-import com.taskmanagement.taskmanagement.domain.User;
-import com.taskmanagement.taskmanagement.repository.UserRepository;
+import com.taskmanagement.taskmanagement.domain.TaskCounter;
+import com.taskmanagement.taskmanagement.repository.TaskCounterRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,24 +11,33 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class TaskNoGenerator {
 
-    UserRepository userRepository;
+    private final TaskCounterRepository taskCounterRepository;
 
-    public TaskNoGenerator(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public TaskNoGenerator(TaskCounterRepository taskCounterRepository) {
+        this.taskCounterRepository = taskCounterRepository;
     }
 
     @Transactional
     public String generateTaskNo(Long userId) {
-        // Kullanıcıyı veritabanından kilitleyerek getiriyor
-        User user = userRepository.findUserForUpdate(userId);
+        // Get global counter with pessimistic lock
+        TaskCounter counter = taskCounterRepository.findGlobalCounterForUpdate();
+        
+        // If counter doesn't exist yet, create it
+        if (counter == null) {
+            counter = new TaskCounter();
+            counter.setCounterValue(0);
+            counter.setCounterName("GLOBAL_COUNTER");
+            taskCounterRepository.save(counter);
+        }
 
-        int currentCounter = user.getTaskCounter();
+        int currentCounter = counter.getCounterValue();
         int nextCounter = (currentCounter >= 9999) ? 1 : currentCounter + 1;
-        user.setTaskCounter(nextCounter);
+        counter.setCounterValue(nextCounter);
+        taskCounterRepository.save(counter);
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
         String formattedCounter = String.format("%04d", nextCounter);
-        String formattedUserId = String.format("%03d", userId);  // <-- Burada userId 3 haneli olacak
+        String formattedUserId = String.format("%03d", userId);
         String checkIndex = HashGenerator.generateHash(timestamp, userId, nextCounter);
 
         return timestamp + "-" + formattedUserId + "-" + checkIndex + "-" + formattedCounter;

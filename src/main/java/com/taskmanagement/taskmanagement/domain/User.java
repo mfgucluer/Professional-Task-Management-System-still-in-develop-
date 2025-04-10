@@ -38,6 +38,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 
+    /**
+     * @deprecated This field is no longer used as we migrated to global counter.
+     * It is kept for backward compatibility.
+     */
+    @Deprecated
     @Column(name = "task_counter")
     private int taskCounter = 0;
 
